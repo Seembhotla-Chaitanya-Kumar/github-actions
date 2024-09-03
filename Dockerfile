@@ -1,6 +1,6 @@
 ARG PYTHON-VERSION
 
-FROM python:${PYTHON_VERSION}
+FROM python:${PYTHON-VERSION}
 
 WORKDIR /usr/src/app
 
