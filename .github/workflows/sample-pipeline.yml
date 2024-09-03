@@ -2,14 +2,16 @@ name: Sample Pipeline
 
 on:
     push:
+    workflow_dispatch: 
 
 jobs:
-    build:
+    build-on-server:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                python-version: ["3.8", "3.9", "3.11"]   
+                python-version: ["3.8", "3.9", "3.11"]  
             fail-fast: false
+            max-parallel: 1
         steps:
             - uses: actions/checkout@v4
             - name: Setup Python
@@ -17,6 +19,7 @@ jobs:
               with: 
                 python-version: ${{ matrix.python-version }}
             - name: Install pip 
+              timeout-minutes: 10
               run: |
                 python -m pip install --upgrade pip 
                 pip --version 
@@ -24,3 +27,24 @@ jobs:
               run: |
                 pip install -r requirements.txt
                 pip list 
+
+    build-on-docker:
+        needs: build-on-server
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                python-version: ["3.8", "3.9", "3.11"]
+            fail-fast: false
+            max-parallel: 2
+        steps:
+            - name: Check if docker exists 
+              run: |
+                docker --version
+            - name: Create Docker image
+              run: |
+                docker build -t my-app:${{ matrix.python-version }} --build-arg PYTHON-VERSION=${{ matrix.python-version }}
+                docker images 
+                
+            
+
+        
