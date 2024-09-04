@@ -29,6 +29,7 @@ jobs:
                 pip list 
 
     build-on-docker:
+        if: github.ref == 'ref/heads/develop'
         needs: build-on-server
         runs-on: ubuntu-latest
         strategy:
