@@ -6,7 +6,7 @@ on:
 
 jobs:
     build-on-docker:
-        if: github.ref == 'ref/heads/develop'
+        # if: github.ref == 'ref/heads/develop'
         runs-on: ubuntu-latest
         strategy:
             matrix:
