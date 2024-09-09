@@ -1,7 +1,7 @@
 name: Debug workflow
 
 on: 
-  push:
+  # push:
   workflow_dispatch:
 env:
   USER_1: "User1"
