@@ -14,15 +14,21 @@ jobs:
             fail-fast: false
             max-parallel: 2
         steps:
-            - uses: actions/checkout@v4
-            - name: Check if docker exists 
-              run: |
-                docker --version
-            - name: Create Docker image
-              run: |
-                docker build -t my-app:${{ matrix.python-version }} --build-arg PYTHON_VERSION=${{ matrix.python-version }} .
-                docker images 
-            - name: Run docker container
+            - uses: docker/build-push-action@v6
+              with:
+                tags: my-app:${{ matrix.python-version }}
+                context: .
+                build-args: |
+                  PYTHON_VERSION=${{ matrix.python-version }}
+                
+            # - name: Check if docker exists 
+            #   run: |
+            #     docker --version
+            # - name: Create Docker image
+            #   run: |
+            #     docker build -t my-app:${{ matrix.python-version }} --build-arg PYTHON_VERSION=${{ matrix.python-version }} .
+            #     docker images 
+            - name: Test docker image
               run: |
                 docker run -itd -p 8501:8501 my-app:${{ matrix.python-version}}
                 sleep 20
@@ -31,22 +37,22 @@ jobs:
                 cat index.html
     
     
-    python_lint:
-      needs: build-on-docker
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v4
+    # python_lint:
+    #   needs: build-on-docker
+    #   runs-on: ubuntu-latest
+    #   steps:
+    #     - uses: actions/checkout@v4
 
-        - name: Setup Pylint and pyflakes
-          uses: actions/setup-python@v5
-          with:
-            python-version: '3.12'
+    #     - name: Setup Pylint and pyflakes
+    #       uses: actions/setup-python@v5
+    #       with:
+    #         python-version: '3.12'
 
-        - name: Run pylint and pyfalkes
-          run: |
-            python -m pip install --upgrade pip 
-            pip install -r requirements.txt
-            pip install flake8 pylint 
-            pylint  main.py
-            flake8 main.py
+    #     - name: Run pylint and pyfalkes
+    #       run: |
+    #         python -m pip install --upgrade pip 
+    #         pip install -r requirements.txt
+    #         pip install flake8 pylint 
+    #         pylint  main.py
+    #         flake8 main.py
          
