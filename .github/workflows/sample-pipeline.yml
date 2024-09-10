@@ -37,7 +37,7 @@ jobs:
             #     docker images 
             - name: Test docker image
               run: |
-                docker run -itd -p 8501:8501 my-app:${{ matrix.python-version}}
+                docker run -itd -p 8501:8501 ${{ vars.DOCKER_USERNAME}}/github-actions:${{ matrix.python-version}}
                 sleep 20
                 docker ps 
                 wget localhost:8501
